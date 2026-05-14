@@ -1,0 +1,22 @@
+﻿{
+  "name": "localminddesk",
+  "version": "2.0.0",
+  "description": "LocalMindDesk — 本地 AI 桌面助手",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "backend": "python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "backend:prod": "python -m uvicorn app.main:app --host 0.0.0.0 --port 8000",
+    "cli": "python cli.py",
+    "build:python": "pyinstaller --noconfirm --clean pyinstaller.spec",
+    "build": "electron-builder",
+    "dist": "npm run build:python && npm run build"
+  },
+  "author": "LocalMindDesk",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  }
+}

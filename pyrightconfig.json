@@ -1,0 +1,9 @@
+{
+    "venvPath": ".",
+    "pythonPath": "C:\\Users\\26590\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "extraPaths": [
+        "C:\\Users\\26590\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages"
+    ],
+    "reportMissingImports": false,
+    "reportMissingModuleSource": false
+}

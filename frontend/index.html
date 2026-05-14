@@ -1,0 +1,1018 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalMindDesk</title>
+    <meta name="description" content="本地 AI 助手 — 所有数据本地存储">
+    <link rel="stylesheet" href="style.css?v=20260504a">
+    <link rel="stylesheet" href="pet-widget.css?v=20260507a">
+    <!-- Fonts loaded via style.css @import (Satoshi + DM Sans + JetBrains Mono) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark-dimmed.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/highlight.min.js"></script>
+</head>
+<body>
+    <!-- Electron 自定义标题栏（无边框模式） -->
+    <div id="titlebar" class="titlebar">
+        <div class="titlebar-drag">
+            <div class="titlebar-brand">
+                <span class="tb-brand-icon">🐾</span>
+                <span class="tb-brand-name">LocalMindDesk</span>
+                <span class="tb-brand-sub">STUDIO LM</span>
+            </div>
+        </div>
+        <div class="titlebar-controls">
+            <button class="tb-btn tb-theme" id="tbThemeToggle" title="切换主题 (暗/白/黑)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
+            <button class="tb-btn tb-minimize" id="tbMinimize" title="最小化">
+                <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="5.5" width="10" height="1" fill="currentColor"/></svg>
+            </button>
+            <button class="tb-btn tb-maximize" id="tbMaximize" title="最大化">
+                <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1.5" y="1.5" width="9" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+            </button>
+            <button class="tb-btn tb-close" id="tbClose" title="关闭">
+                <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2L10 10M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+        </div>
+    </div>
+    <div id="app">
+        <!-- ===== Activity Bar (图标导航条) ===== -->
+        <div id="activityBar">
+            <div class="ab-top">
+                <button class="ab-btn active" data-panel="chat" title="对话">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                </button>
+                <button class="ab-btn" data-panel="soul" title="灵魂">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </button>
+                <button class="ab-btn" data-panel="insights" title="洞察">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                </button>
+                <button class="ab-btn" data-panel="scheduler" title="定时">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </button>
+                <button class="ab-btn" id="skillsShortcutBtn" title="技能库">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+                </button>
+                <button class="ab-btn" data-panel="privacy" title="隐私保护">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </button>
+                <button class="ab-btn" id="petToggleBtn" data-panel="pet" title="桌宠">🐾</button>
+            </div>
+            <div class="ab-bottom">
+                <button class="ab-btn" id="settingsBtn" data-panel="settings" title="设置">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== Side Panel (可切换内容) ===== -->
+        <aside id="sidebar">
+            <!-- Panel: 对话 (默认) -->
+            <div class="side-panel active" id="panelChat">
+                <div class="sp-chat-header">
+                    <span class="sp-chat-title">CHATS</span>
+                    <div class="sp-chat-actions">
+                        <button class="sp-icon-btn" title="刷新" onclick="loadSessions()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                        </button>
+                        <div class="ctx-menu-anchor">
+                            <button id="chatPanelMoreBtn" class="sp-icon-btn" title="更多">⋯</button>
+                            <div id="chatPanelMenu" class="ctx-menu">
+                                <button class="ctx-menu-item" data-action="export-chat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出对话记录</button>
+                                <button class="ctx-menu-item" data-action="clear-all-chats"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>清空所有对话</button>
+                                <div class="ctx-menu-sep"></div>
+                                <button class="ctx-menu-item" data-action="open-settings"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>设置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sp-section-label">
+                    <span>▾ RECENT CONVERSATIONS</span>
+                    <button id="newChatBtn" class="sp-plus-btn" title="新对话">+</button>
+                </div>
+
+                <nav class="chat-list" id="chatList">
+                    <div class="chat-list-empty">暂无对话历史</div>
+                </nav>
+
+                <div class="sp-chat-bottom">
+                    <button class="sp-new-chat-btn" onclick="document.getElementById('newChatBtn').click()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                        Chat Bubble
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel: 灵魂 (多角色管理 + 蒸馏) -->
+            <div class="side-panel" id="panelSoul">
+                <div class="sp-header">
+                    <h3>👤 角色管理</h3>
+                    <button id="newPersonaBtn" class="btn-outline btn-sm" title="新建角色">+ 新建</button>
+                </div>
+                <div class="sp-body">
+                    <!-- 1. 角色列表 -->
+                    <div class="sp-card persona-list-card">
+                        <label class="sp-label">🎭 角色库</label>
+                        <div id="personaList" class="persona-list">
+                            <div class="sp-facts-empty">加载中...</div>
+                        </div>
+                    </div>
+
+                    <!-- 2. 当前角色编辑器 -->
+                    <div class="sp-card persona-editor-card" id="personaEditorCard" style="display:none">
+                        <div class="persona-editor-header">
+                            <label class="sp-label" id="personaEditorTitle">编辑角色</label>
+                            <div class="persona-editor-actions">
+                                <button id="appendMaterialBtn" class="btn-outline btn-sm" title="追加材料进化角色">📎 追加</button>
+                                <button id="savePersonaBtn" class="btn-primary btn-sm">💾 保存</button>
+                                <button id="personaVersionBtn" class="btn-outline btn-sm" title="版本历史">📜</button>
+                            </div>
+                        </div>
+                        <textarea id="soulEditor" class="sp-editor" rows="10" placeholder="5 层 Persona 定义..."></textarea>
+                        <div class="persona-mem-section" style="margin-top:8px">
+                            <label class="sp-label-sm">💭 共同记忆 <span style="opacity:0.5;font-size:11px">(可选)</span></label>
+                            <textarea id="memoriesEditor" class="sp-editor" rows="4" placeholder="共同记忆、关系时间线..."></textarea>
+                        </div>
+
+                        <!-- 追加材料面板 (默认隐藏) -->
+                        <div id="appendPanel" class="append-panel" style="display:none">
+                            <div class="append-header">
+                                <label class="sp-label-sm">📎 追加新材料</label>
+                                <button id="closeAppendBtn" class="sp-icon-btn" title="关闭">✕</button>
+                            </div>
+                            <p class="append-desc">上传新的聊天记录或描述文本，增量进化当前角色的记忆和特征</p>
+                            <div class="append-form">
+                                <div id="appendDropZone" class="file-dropzone file-dropzone-sm">
+                                    <div class="dropzone-content">
+                                        <span class="dropzone-icon">📎</span>
+                                        <span class="dropzone-text">拖拽文件或</span>
+                                        <button class="dropzone-btn" id="appendFileBtn">选择文件</button>
+                                        <span class="dropzone-formats">支持 txt / html / json / csv</span>
+                                        <input type="file" id="appendFileInput" accept=".txt,.html,.htm,.json,.csv,.mht,.log" style="display:none">
+                                    </div>
+                                    <div id="appendFileInfo" class="dropzone-info" style="display:none">
+                                        <span id="appendFileName"></span>
+                                        <button class="dropzone-remove" id="appendFileRemove">✕</button>
+                                    </div>
+                                </div>
+                                <textarea id="appendText" rows="3" placeholder="或直接粘贴新的聊天记录 / 描述材料..." class="input-sm" style="margin-top:6px"></textarea>
+                                <button id="submitAppendBtn" class="btn-append">
+                                    <span class="append-btn-icon">🧬</span> 开始增量进化
+                                </button>
+                            </div>
+                            <!-- 追加结果 -->
+                            <div id="appendResult" class="append-result" style="display:none"></div>
+                        </div>
+
+                        <!-- 版本历史面板 (默认隐藏) -->
+                        <div id="versionPanel" class="version-panel" style="display:none">
+                            <div class="version-header">
+                                <label class="sp-label-sm">📜 版本历史</label>
+                                <button id="closeVersionBtn" class="sp-icon-btn" title="关闭">✕</button>
+                            </div>
+                            <p class="version-desc">每次保存或蒸馏进化都会自动存档，可随时回滚到历史版本</p>
+                            <div id="versionList" class="version-list">
+                                <div class="sp-facts-empty">加载中...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. 蒸馏入口 -->
+                    <div class="sp-card distill-card">
+                        <label class="sp-label">🧪 角色蒸馏</label>
+                        <p class="distill-desc">从聊天记录或描述中提取人物特征，自动生成 5 层 Persona</p>
+                        
+                        <div class="distill-form" id="distillForm">
+                            <div class="form-group-sm">
+                                <label>目标人物名称 <span class="required">*</span></label>
+                                <input type="text" id="distillName" placeholder="如：小雪" class="input-sm">
+                            </div>
+                            <div class="form-group-sm">
+                                <label>性格标签 <span style="opacity:0.5;font-size:11px">(可选)</span></label>
+                                <input type="text" id="distillTags" placeholder="如：ENFP 双子座 爱撒娇" class="input-sm">
+                            </div>
+                            <div class="form-group-sm">
+                                <label>人物描述 <span style="opacity:0.5;font-size:11px">(可选)</span></label>
+                                <textarea id="distillDesc" rows="2" placeholder="简单描述这个人的性格特征..." class="input-sm"></textarea>
+                            </div>
+                            <div class="form-group-sm">
+                                <label>聊天记录</label>
+                                <div id="chatDropZone" class="file-dropzone">
+                                    <div class="dropzone-content">
+                                        <span class="dropzone-icon">📎</span>
+                                        <span class="dropzone-text">拖拽聊天记录文件到此处，或</span>
+                                        <button class="dropzone-btn" id="chatFileBtn">选择文件</button>
+                                        <span class="dropzone-formats">支持 txt / html / json / csv / mht</span>
+                                        <input type="file" id="chatFileInput" accept=".txt,.html,.htm,.json,.csv,.mht,.log" style="display:none">
+                                    </div>
+                                    <div id="chatFileInfo" class="dropzone-info" style="display:none">
+                                        <span id="chatFileName"></span>
+                                        <button class="dropzone-remove" id="chatFileRemove">✕</button>
+                                    </div>
+                                </div>
+                                <textarea id="distillChat" rows="3" placeholder="或直接粘贴聊天记录..." class="input-sm" style="margin-top:6px"></textarea>
+                            </div>
+                            <div class="form-group-sm">
+                                <label>🤖 蒸馏模型</label>
+                                <select id="distillModelSelect" class="input-sm distill-model-select">
+                                    <option value="">使用当前模型</option>
+                                </select>
+                            </div>
+                            <button id="startDistillBtn" class="btn-distill">
+                                <span class="distill-btn-icon">🧪</span> 开始蒸馏
+                            </button>
+                        </div>
+
+                        <!-- 蒸馏结果预览 -->
+                        <div id="distillPreview" class="distill-preview" style="display:none">
+                            <div class="preview-header">
+                                <span>🔬 蒸馏结果预览</span>
+                                <button id="closePreviewBtn" class="sp-icon-btn">✕</button>
+                            </div>
+                            <div class="preview-stats" id="previewStats"></div>
+                            <div class="preview-tabs">
+                                <button class="preview-tab active" data-target="previewPersona">Persona</button>
+                                <button class="preview-tab" data-target="previewMemories">Memories</button>
+                            </div>
+                            <div id="previewPersona" class="preview-content active">
+                                <pre id="previewPersonaText"></pre>
+                            </div>
+                            <div id="previewMemories" class="preview-content">
+                                <pre id="previewMemoriesText"></pre>
+                            </div>
+                            <div class="preview-actions">
+                                <button id="confirmDistillBtn" class="btn-primary btn-sm">✅ 创建角色</button>
+                                <button id="cancelDistillBtn" class="btn-outline btn-sm">取消</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. 用户画像 -->
+                    <div class="sp-card" style="margin-top:8px">
+                        <label class="sp-label">📋 用户画像</label>
+                        <div id="userFactsList" class="sp-facts">
+                            <div class="sp-facts-empty">暂无用户事实</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel: 洞察 -->
+            <div class="side-panel" id="panelInsights">
+                <div class="sp-header">
+                    <h3>📊 行为洞察</h3>
+                </div>
+                <div class="sp-body">
+                    <div class="sp-card">
+                        <label class="sp-label">🔧 工具使用排行</label>
+                        <div id="toolRankList" class="sp-rank-list">
+                            <div class="sp-facts-empty">暂无数据</div>
+                        </div>
+                    </div>
+                    <div class="sp-card" style="margin-top:12px">
+                        <label class="sp-label">🎯 技能使用排行</label>
+                        <div id="skillRankList" class="sp-rank-list">
+                            <div class="sp-facts-empty">暂无数据</div>
+                        </div>
+                    </div>
+                    <div class="sp-card" style="margin-top:12px">
+                        <label class="sp-label">💡 AI 洞察</label>
+                        <div id="insightsSummary" class="sp-insight-text">
+                            加载中...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel: 定时任务 -->
+            <div class="side-panel" id="panelScheduler">
+                <div class="sp-header">
+                    <h3>⏰ 定时任务</h3>
+                    <button id="addScheduleQuickBtn" class="btn-outline btn-sm">+ 新建</button>
+                </div>
+                <div class="sp-body">
+                    <div id="scheduleQuickList" class="sp-schedule-list">
+                        <div class="sp-facts-empty">暂无定时任务</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel: 隐私保护 -->
+            <div class="side-panel" id="panelPrivacy">
+                <div class="sp-header">
+                    <h3>🛡️ 隐私保护</h3>
+                </div>
+                <div class="sp-body">
+                    <!-- 隐私状态概览 -->
+                    <div class="sp-card">
+                        <label class="sp-label">📊 保护状态</label>
+                        <div class="privacy-stats" id="privacyStats">
+                            <div class="privacy-stat-row">
+                                <span class="privacy-stat-label">扫描消息</span>
+                                <span class="privacy-stat-value" id="pvStatScanned">0</span>
+                            </div>
+                            <div class="privacy-stat-row">
+                                <span class="privacy-stat-label">脱敏处理</span>
+                                <span class="privacy-stat-value" id="pvStatSanitized">0</span>
+                            </div>
+                            <div class="privacy-stat-row">
+                                <span class="privacy-stat-label">自定义敏感词</span>
+                                <span class="privacy-stat-value" id="pvStatBlacklist">0</span>
+                            </div>
+                            <div class="privacy-stat-row">
+                                <span class="privacy-stat-label">🏠 本地调用</span>
+                                <span class="privacy-stat-value" id="pvStatLocal">0</span>
+                            </div>
+                            <div class="privacy-stat-row">
+                                <span class="privacy-stat-label">☁️ 云端调用</span>
+                                <span class="privacy-stat-value" id="pvStatCloud">0</span>
+                            </div>
+                            <div class="privacy-stat-row">
+                                <span class="privacy-stat-label">🛡️ 脱敏后云端</span>
+                                <span class="privacy-stat-value" id="pvStatFiltered">0</span>
+                            </div>
+                        </div>
+                        <div class="privacy-shield-status" id="privacyShieldStatus">
+                            <span class="shield-icon">🟢</span>
+                            <span class="shield-text">隐私保护已启用</span>
+                        </div>
+                    </div>
+
+                    <!-- 检测规则 -->
+                    <div class="sp-card">
+                        <label class="sp-label">🔍 自动检测规则</label>
+                        <div class="privacy-rules">
+                            <div class="privacy-rule">📱 手机号码 (1xx-xxxx-xxxx)</div>
+                            <div class="privacy-rule">🪪 身份证号 (18位)</div>
+                            <div class="privacy-rule">📧 邮箱地址</div>
+                            <div class="privacy-rule">🔑 API Key / 密码</div>
+                            <div class="privacy-rule">💳 银行卡号</div>
+                            <div class="privacy-rule">🌐 IP 地址</div>
+                            <div class="privacy-rule">📂 Windows 文件路径</div>
+                        </div>
+                    </div>
+
+                    <!-- 自定义敏感词 -->
+                    <div class="sp-card">
+                        <label class="sp-label">🚫 自定义敏感词</label>
+                        <p class="privacy-desc">添加自定义敏感词，发送到云端模型前会自动脱敏替换</p>
+                        <div class="blacklist-input-row">
+                            <input type="text" id="blacklistInput" class="input-sm" placeholder="输入敏感词，回车添加...">
+                            <button id="addBlacklistBtn" class="btn-primary btn-sm">添加</button>
+                        </div>
+                        <div id="blacklistTags" class="blacklist-tags"></div>
+                    </div>
+
+                    <!-- 脱敏日志 -->
+                    <div class="sp-card">
+                        <label class="sp-label">📋 脱敏日志</label>
+                        <div id="privacyLog" class="privacy-log">
+                            <div class="sp-facts-empty">暂无脱敏记录</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 侧边栏底部信息（所有面板共享） -->
+            <div class="sidebar-bottom">
+                <div id="memoryStatus" class="memory-status" style="display:none"></div>
+                <div class="sidebar-bottom-row">
+                    <div class="model-indicator" id="modelIndicator">
+                        <span class="status-dot" id="statusDot"></span>
+                        <span class="model-label" id="modelLabel">未连接</span>
+                    </div>
+                    <a id="wechatBtn" href="#" onclick="openWeChatLogin(); return false;" class="btn-wechat" title="微信连接">
+                        <span id="wechatDot" class="wechat-dot offline"></span>
+                        <span>💬</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主区域 -->
+        <main id="mainArea">
+            <header id="chatHeader">
+                <button id="toggleSidebar" class="btn-icon mobile-only">☰</button>
+                <div class="chat-tabs">
+                    <div class="chat-tab active">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                        <span>Chat AI</span>
+                        <button class="tab-close" title="关闭">×</button>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <select id="modelSelect" class="model-select"></select>
+                    <button id="clearBtn" class="btn-icon" title="清空对话">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                    </button>
+                    <div class="ctx-menu-anchor">
+                        <button id="chatHeaderMoreBtn" class="btn-icon" title="更多">⋯</button>
+                        <div id="chatHeaderMenu" class="ctx-menu">
+                            <button class="ctx-menu-item" data-action="personalize"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>个性化设置</button>
+                            <button class="ctx-menu-item" data-action="model-settings"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>模型端点</button>
+                            <div class="ctx-menu-sep"></div>
+                            <button class="ctx-menu-item" data-action="copy-chat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>复制对话内容</button>
+                            <button class="ctx-menu-item" data-action="regenerate"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>重新生成</button>
+                            <div class="ctx-menu-sep"></div>
+                            <button class="ctx-menu-item" data-action="session-stats"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>会话统计</button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Context Status Bar -->
+            <div class="context-bar" id="contextBar">
+                <div class="ctx-stat">
+                    <span class="ctx-icon">🧠</span>
+                    <span>Context:</span>
+                    <span class="ctx-val" id="ctxTokens">0</span>
+                    <span>/ 4,096 tok</span>
+                </div>
+                <div class="ctx-progress-wrap">
+                    <div class="ctx-progress-bar" id="ctxProgressBar" style="width:0%"></div>
+                </div>
+                <div class="ctx-stat">
+                    <span class="ctx-icon">🔥</span>
+                    <span>Hot:</span>
+                    <span class="ctx-val" id="ctxHot">0</span>
+                </div>
+                <div class="ctx-stat">
+                    <span class="ctx-icon">🧬</span>
+                    <span>L3:</span>
+                    <span class="ctx-val" id="ctxVec">0</span>
+                </div>
+            </div>
+
+            <div id="messagesWrap">
+                <div id="messages">
+                    <div id="welcome" class="welcome">
+                        <!-- 粒子背景 Canvas -->
+                        <canvas id="welcomeParticles" class="welcome-particles"></canvas>
+
+                        <!-- 品牌 Logo：爪印 + 发光环 -->
+                        <div class="welcome-logo">
+                            <div class="welcome-avatar">🐾</div>
+                            <div class="welcome-ring"></div>
+                            <div class="welcome-ring welcome-ring-2"></div>
+                        </div>
+
+                        <h2>LocalMindDesk</h2>
+                        <div class="welcome-subtitle">
+                            Your mind, locally amplified.
+                            <span class="privacy-badge">🔒 数据全在本地</span>
+                        </div>
+
+                        <!-- 系统状态卡片 -->
+                        <div class="welcome-status-row" id="welcomeStatus">
+                            <div class="status-card">
+                                <div class="status-card-icon online" id="welcomeModelIcon">🟢</div>
+                                <div class="status-card-info">
+                                    <div class="status-card-label">模型状态</div>
+                                    <div class="status-card-value" id="welcomeModelName">检测中...</div>
+                                    <div class="status-card-sub" id="welcomeModelSub">LM Studio</div>
+                                </div>
+                            </div>
+                            <div class="status-card">
+                                <div class="status-card-icon memory">💾</div>
+                                <div class="status-card-info">
+                                    <div class="status-card-label">记忆系统</div>
+                                    <div class="status-card-value" id="welcomeMemVal">就绪</div>
+                                    <div class="status-card-sub" id="welcomeMemSub">三层记忆架构</div>
+                                </div>
+                            </div>
+                            <a href="#" onclick="openWeChatLogin(); return false;" class="status-card wechat-card" title="点击扫码登录微信" style="text-decoration:none;color:inherit">
+                                <div class="status-card-icon wechat" id="welcomeWechatIcon">💬</div>
+                                <div class="status-card-info">
+                                    <div class="status-card-label">微信桥接</div>
+                                    <div class="status-card-value" id="welcomeWechatVal">未连接</div>
+                                    <div class="status-card-sub" id="welcomeWechatSub">点击扫码登录</div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="quick-grid">
+                            <button class="quick-card" data-p="帮我做一份项目汇报 PPT">
+                                <span class="qc-icon">📊</span>
+                                <span class="qc-title">做 PPT</span>
+                                <span class="qc-desc">自动生成项目汇报</span>
+                            </button>
+                            <button class="quick-card" data-p="帮我写一份技术文档">
+                                <span class="qc-icon">📄</span>
+                                <span class="qc-title">写文档</span>
+                                <span class="qc-desc">Word / PDF 生成</span>
+                            </button>
+                            <button class="quick-card" data-p="搜索 2026 年最新 AI 框架">
+                                <span class="qc-icon">🔍</span>
+                                <span class="qc-title">联网搜索</span>
+                                <span class="qc-desc">实时信息检索</span>
+                            </button>
+                            <button class="quick-card" data-p="帮我优化这段代码的性能">
+                                <span class="qc-icon">💻</span>
+                                <span class="qc-title">代码助手</span>
+                                <span class="qc-desc">代码优化与审查</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="inputArea">
+                <div class="input-box">
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <span>正在思考</span>
+                    </div>
+                    <div class="input-row">
+                        <!-- 模式选择按钮 -->
+                        <div class="mode-menu-container">
+                            <button id="modeMenuBtn" class="btn-mode-menu" title="选择模式">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            </button>
+                            <div id="modeMenuPopup" class="mode-menu-popup">
+                                <button class="mode-menu-item" data-mode="plan">
+                                    <span class="mode-menu-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
+                                    <span class="mode-menu-label">Plan</span>
+                                    <span class="mode-menu-desc">先制定计划，确认后执行</span>
+                                </button>
+                                <button class="mode-menu-item" data-mode="execute">
+                                    <span class="mode-menu-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+                                    <span class="mode-menu-label">Execute</span>
+                                    <span class="mode-menu-desc">直接执行，快速完成</span>
+                                </button>
+                                <button class="mode-menu-item active" data-mode="collaborate">
+                                    <span class="mode-menu-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span>
+                                    <span class="mode-menu-label">Collaborate</span>
+                                    <span class="mode-menu-desc">协作讨论方案后行动</span>
+                                </button>
+                                <button class="mode-menu-item" data-mode="review">
+                                    <span class="mode-menu-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                                    <span class="mode-menu-label">Review</span>
+                                    <span class="mode-menu-desc">深度审查与改进建议</span>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="chatInput" rows="1" placeholder="发送消息给 LocalMindDesk..."></textarea>
+                        <button id="sendBtn" class="btn-send" disabled>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                        </button>
+                    </div>
+                    <!-- 当前模式指示器 + 快捷键提示 -->
+                    <div class="input-hint">
+                        <span id="currentModeIndicator" class="mode-indicator">🤝 Collaborate</span>
+                        <span class="hint-sep">·</span>
+                        Enter 发送 · Shift+Enter 换行
+                    </div>
+                </div>
+            </div>
+
+            <!-- 桌宠挂件 -->
+            <div id="petWidget" class="pet-widget">
+                <canvas id="petCanvas" width="128" height="128"></canvas>
+                <div class="pet-tooltip" id="petTooltip"></div>
+                <div class="pet-controls">
+                    <button class="pet-ctrl-btn" id="petMenuBtn" title="宠物菜单">⋯</button>
+                </div>
+                <div class="pet-menu" id="petMenu">
+                    <button class="pet-menu-item" id="petDesktopToggle">
+                        <span class="menu-icon">🖥️</span>
+                        <span>释放到桌面</span>
+                    </button>
+                    <button class="pet-menu-item" id="petChangeBtn">
+                        <span class="menu-icon">🔄</span>
+                        <span>切换宠物</span>
+                    </button>
+                    <div class="pet-menu-sep"></div>
+                    <button class="pet-menu-item" id="petSettingsBtn">
+                        <span class="menu-icon">⚙️</span>
+                        <span>桌宠设置</span>
+                    </button>
+                    <button class="pet-menu-item" id="petHideBtn">
+                        <span class="menu-icon">👋</span>
+                        <span>隐藏宠物</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- 设置面板 -->
+        <div id="settingsPanel" class="panel-overlay" style="display:none">
+            <div class="panel-backdrop" id="panelBackdrop"></div>
+            <div class="panel-sheet">
+                <div class="panel-header">
+                    <h2>⚙️ 设置</h2>
+                    <button id="closePanel" class="btn-icon">✕</button>
+                </div>
+
+                <!-- Tab 导航 -->
+                <div class="settings-tabs">
+                    <button class="stab active" data-tab="tabEndpoints">模型端点</button>
+                    <button class="stab" data-tab="tabPersona">🎨 个性化</button>
+                    <button class="stab" data-tab="tabIntegrations">🔌 应用集成</button>
+                    <button class="stab" data-tab="tabSkills">🎯 技能库</button>
+                    <button class="stab" data-tab="tabSchedules">⏰ 定时任务</button>
+                    <button class="stab" data-tab="tabSandbox">🛡️ 沙盒</button>
+                    <button class="stab" data-tab="tabPet">🐾 桌宠</button>
+                    <button class="stab" data-tab="tabParams">⚙ 参数</button>
+                </div>
+
+                <div class="panel-body">
+                    <!-- Tab: 模型端点 -->
+                    <div class="tab-content active" id="tabEndpoints">
+                        <section class="setting-section">
+                            <h3>模型端点</h3>
+                            <div id="endpointList"></div>
+                            <button id="addEndpointBtn" class="btn-outline">+ 添加模型端点</button>
+                        </section>
+                        <section id="addEndpointForm" class="setting-section" style="display:none">
+                            <h3>添加新端点</h3>
+                            <div class="form-group">
+                                <label>名称</label>
+                                <input type="text" id="epName" placeholder="如: deepseek-chat">
+                            </div>
+                            <div class="form-group">
+                                <label>类型</label>
+                                <select id="epProvider">
+                                    <option value="lmstudio">LM Studio (本地)</option>
+                                    <option value="ollama">Ollama (本地)</option>
+                                    <option value="deepseek">DeepSeek (远程)</option>
+                                    <option value="openai">OpenAI 兼容 (远程)</option>
+                                    <option value="custom">自定义</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>API Base URL</label>
+                                <input type="text" id="epUrl" placeholder="http://127.0.0.1:1234/v1">
+                            </div>
+                            <div class="form-group">
+                                <label>API Key（本地可留空）</label>
+                                <input type="password" id="epKey" placeholder="sk-...">
+                            </div>
+                            <div class="form-group">
+                                <label>模型 ID</label>
+                                <input type="text" id="epModel" placeholder="gemma-4-e4b-it">
+                            </div>
+                            <div class="form-actions">
+                                <button id="saveEndpoint" class="btn-primary">保存</button>
+                                <button id="cancelEndpoint" class="btn-ghost">取消</button>
+                            </div>
+                        </section>
+                        <section class="setting-section">
+                            <h3>连接测试</h3>
+                            <button id="testConn" class="btn-outline">🔌 测试当前模型连接</button>
+                            <div id="connResult" class="conn-result"></div>
+                        </section>
+                    </div>
+
+                    <!-- Tab: 个性化 -->
+                    <div class="tab-content" id="tabPersona">
+                        <section class="setting-section">
+                            <h3>🎭 Agent 身份</h3>
+                            <div class="form-row">
+                                <div class="form-group" style="flex:0 0 80px">
+                                    <label>图标</label>
+                                    <input type="text" id="pIcon" value="🧠" class="icon-input">
+                                </div>
+                                <div class="form-group" style="flex:1">
+                                    <label>名称</label>
+                                    <input type="text" id="pName" placeholder="LocalMindDesk">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>角色描述</label>
+                                <input type="text" id="pRole" placeholder="通用 AI 助手">
+                            </div>
+                            <div class="form-group">
+                                <label>System Prompt</label>
+                                <textarea id="pSysPrompt" rows="4" placeholder="你是 LocalMindDesk..."></textarea>
+                            </div>
+                        </section>
+                        <section class="setting-section">
+                            <h3>🎛 行为偏好</h3>
+                            <div class="form-row">
+                                <div class="form-group" style="flex:1">
+                                    <label>回答风格</label>
+                                    <select id="pStyle">
+                                        <option value="concise">简洁</option>
+                                        <option value="balanced">均衡</option>
+                                        <option value="detailed">详细</option>
+                                        <option value="creative">创意</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex:1">
+                                    <label>回答长度</label>
+                                    <select id="pLength">
+                                        <option value="short">简短</option>
+                                        <option value="medium">适中</option>
+                                        <option value="long">详尽</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>语言</label>
+                                <select id="pLang">
+                                    <option value="zh-CN">中文</option>
+                                    <option value="en">English</option>
+                                    <option value="ja">日本語</option>
+                                </select>
+                            </div>
+                        </section>
+                        <div class="form-actions">
+                            <button id="savePersona" class="btn-primary">💾 保存个性化</button>
+                            <button id="resetPersona" class="btn-ghost">重置为默认</button>
+                        </div>
+                    </div>
+
+                    <!-- Tab: 应用集成 -->
+                    <div class="tab-content" id="tabIntegrations">
+                        <section class="setting-section">
+                            <h3>🔌 外部应用集成</h3>
+                            <p class="section-desc">启用外部应用后，LocalMindDesk 可以直接操控它们发送消息、文件等。</p>
+                            <div id="integrationList" class="integration-list">
+                                <div class="integration-loading">加载中...</div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Tab: 技能库 -->
+                    <div class="tab-content" id="tabSkills">
+                        <section class="setting-section">
+                            <h3>🐙 从 GitHub 学习</h3>
+                            <div class="github-learn-row">
+                                <input type="text" id="ghLearnUrl" placeholder="https://github.com/user/repo" class="gh-url-input">
+                                <select id="ghLearnScope" class="gh-scope-select">
+                                    <option value="global">全局</option>
+                                    <option value="local">项目</option>
+                                </select>
+                                <button id="ghLearnBtn" class="btn-primary">📥 学习</button>
+                            </div>
+                            <div id="ghLearnStatus" class="gh-learn-status"></div>
+                        </section>
+                        <section class="setting-section">
+                            <h3>🌐 全局技能</h3>
+                            <div id="globalSkillList" class="skill-list">
+                                <div class="skill-empty">暂无技能</div>
+                            </div>
+                        </section>
+                        <section class="setting-section">
+                            <h3>📂 局部技能（项目级）</h3>
+                            <div id="localSkillList" class="skill-list">
+                                <div class="skill-empty">未打开项目</div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Tab: 定时任务 -->
+                    <div class="tab-content" id="tabSchedules">
+                        <section class="setting-section">
+                            <h3>⏰ 定时任务</h3>
+                            <p class="section-desc">设置定时提醒和自动任务，让 LocalMindDesk 主动为你服务。</p>
+                            <div id="scheduleList"></div>
+                            <button class="btn-outline" onclick="showAddScheduleForm()" style="margin-top:12px">➕ 新建任务</button>
+                        </section>
+                        <section class="setting-section" id="scheduleFormSection" style="display:none">
+                            <h3>新建定时任务</h3>
+                            <div class="form-group">
+                                <label>任务名称</label>
+                                <input type="text" id="schedName" placeholder="如：每日学习提醒">
+                            </div>
+                            <div class="form-group">
+                                <label>Cron 表达式 <span style="opacity:0.5;font-size:0.8em">分 时 日 月 周</span></label>
+                                <input type="text" id="schedCron" placeholder="0 8 * * *  (每天早上8点)">
+                            </div>
+                            <div class="form-group">
+                                <label>动作类型</label>
+                                <select id="schedAction">
+                                    <option value="send_wechat">💬 微信发送</option>
+                                    <option value="reminder">📢 本地提醒</option>
+                                    <option value="terminal">💻 执行命令</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>发送给（微信联系人）</label>
+                                <input type="text" id="schedUser" placeholder="文件传输助手" value="文件传输助手">
+                            </div>
+                            <div class="form-group">
+                                <label>消息 / 命令内容</label>
+                                <textarea id="schedMessage" rows="3" placeholder="☀️ 早上好！该学习了！"></textarea>
+                            </div>
+                            <div style="display:flex;gap:8px">
+                                <button class="btn-primary" onclick="createSchedule()">  创建任务</button>
+                                <button class="btn-outline" onclick="hideAddScheduleForm()">取消</button>
+                            </div>
+                        </section>
+                        <section class="setting-section">
+                            <h3>📚 预设模板</h3>
+                            <p class="section-desc">一键添加常用定时任务</p>
+                            <div id="scheduleTemplates"></div>
+                        </section>
+                        <section class="setting-section">
+                            <h3>📝 执行日志</h3>
+                            <div id="scheduleLog" style="max-height:200px;overflow-y:auto;font-size:0.82rem"></div>
+                        </section>
+                    </div>
+
+                    <!-- Tab: 沙盒 -->
+                    <div class="tab-content" id="tabSandbox">
+                        <section class="setting-section">
+                            <h3>🛡️ 沙盒环境</h3>
+                            <div id="sandboxStatus" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;margin-bottom:12px;font-size:0.85rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)">
+                                <span id="sandboxStatusIcon">🟢</span>
+                                <span id="sandboxStatusText">默认拒绝所有访问（打开文件夹后可访问该目录）</span>
+                            </div>
+                            <p class="section-desc">默认拒绝所有文件访问。打开文件夹后，该目录自动加入白名单。也可手动添加允许路径。</p>
+                            <div class="form-group">
+                                <label>允许操作的路径（白名单）</label>
+                                <div id="sandboxRoots" class="path-list"></div>
+                                <div class="path-add-row">
+                                    <input type="text" id="newSandboxRoot" placeholder="输入路径，如 D:\projects">
+                                    <button id="addSandboxRoot" class="btn-outline btn-sm">+ 添加</button>
+                                    <button id="browseSandboxRoot" class="btn-outline btn-sm" style="display:none" title="浏览文件夹">📁</button>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="setting-section">
+                            <div class="form-group">
+                                <label>禁止访问的路径（黑名单）</label>
+                                <div id="forbiddenPaths" class="path-list"></div>
+                                <div class="path-add-row">
+                                    <input type="text" id="newForbiddenPath" placeholder="输入路径，如 C:\Windows">
+                                    <button id="addForbiddenPath" class="btn-outline btn-sm">+ 添加</button>
+                                    <button id="browseForbiddenPath" class="btn-outline btn-sm" style="display:none" title="浏览文件夹">📁</button>
+                                </div>
+                            </div>
+                            <button id="saveSandbox" class="btn-primary">💾 保存沙盒设置</button>
+                        </section>
+                    </div>
+
+                    <!-- Tab: 桌宠 -->
+                    <div class="tab-content" id="tabPet">
+                        <section class="setting-section">
+                            <h3>🐾 桌宠设置</h3>
+                            <div class="form-group">
+                                <label>启用桌宠</label>
+                                <div style="display:flex;align-items:center;gap:12px">
+                                    <input type="checkbox" id="petEnabledToggle" checked>
+                                    <span id="petEnabledLabel" style="font-size:0.85rem;opacity:0.7">已启用</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>显示大小 <span id="petSizeVal">128</span>px</label>
+                                <input type="range" id="petSizeRange" min="64" max="256" step="8" value="128" class="pet-size-slider">
+                                <div class="pet-size-preview" id="petSizePreview"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>响应 AI 活动</label>
+                                <div style="display:flex;align-items:center;gap:12px">
+                                    <input type="checkbox" id="petReactToggle" checked>
+                                    <span style="font-size:0.85rem;opacity:0.7">AI 思考/回复时宠物做出反应</span>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="setting-section">
+                            <h3>🎨 选择宠物</h3>
+                            <div class="pet-grid" id="petGrid">
+                                <div class="pet-grid-item selected" data-pet-id="default">
+                                    <div style="font-size:48px">🐾</div>
+                                    <span class="pet-grid-name">LocalMindDesk</span>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="setting-section">
+                            <h3>📥 导入社区宠物</h3>
+                            <p class="section-desc">从 <a href="https://github.com/legeling/awesome-codex-pet" target="_blank" style="color:#a78bfa">awesome-codex-pet</a> 导入像素宠物</p>
+                            <div class="pet-import-row">
+                                <input type="text" id="petImportUrl" placeholder="宠物 ID，如：bocchi--lingxiaotian" class="input-sm">
+                                <button id="petImportBtn" class="btn-primary btn-sm">📥 导入</button>
+                            </div>
+                            <div id="petImportStatus" style="margin-top:8px;font-size:0.82rem"></div>
+                        </section>
+                    </div>
+
+                    <!-- Tab: 参数 -->
+                    <div class="tab-content" id="tabParams">
+                        <section class="setting-section">
+                            <h3>全局参数</h3>
+                            <div class="form-group">
+                                <label>Temperature <span id="tempVal">0.7</span></label>
+                                <input type="range" id="tempRange" min="0" max="1" step="0.1" value="0.7">
+                            </div>
+                            <div class="form-group">
+                                <label>System Prompt（全局覆盖）</label>
+                                <textarea id="sysPrompt" rows="3">你是 LocalMindDesk，一个高效的 AI 助手。</textarea>
+                            </div>
+                            <button id="saveGlobal" class="btn-primary">保存全局设置</button>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 项目工作区（始终显示） -->
+        <aside id="workspace" class="workspace">
+            <div class="ws-header">
+                <div class="ws-title">
+                    <span class="ws-icon">📁</span>
+                    <span id="wsProjectName">FILES & PROJECT</span>
+                </div>
+                <div class="ws-actions">
+                    <button id="wsOpenBtn" class="sp-icon-btn" title="打开文件夹">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                    </button>
+                    <div class="ctx-menu-anchor">
+                        <button id="wsMoreBtn" class="sp-icon-btn" title="更多">⋯</button>
+                        <div id="wsMenu" class="ctx-menu ctx-menu-right">
+                            <button class="ctx-menu-item" data-action="ws-refresh"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>刷新文件树</button>
+                            <button class="ctx-menu-item" data-action="ws-reveal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>在资源管理器中打开</button>
+                            <button class="ctx-menu-item" data-action="ws-copy-path"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>复制路径</button>
+                            <div class="ctx-menu-sep"></div>
+                            <button class="ctx-menu-item ctx-menu-danger" data-action="ws-close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>关闭工作区</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ws-body">
+                <div class="ws-section-label">▾ FILES & PROJECTS</div>
+                <div class="ws-tree" id="wsTree">
+                    <div class="ws-tree-empty" id="wsEmptyState">
+                        <div class="ws-empty-icon">📂</div>
+                        <div class="ws-empty-text">尚未打开项目</div>
+                        <button id="wsOpenBtnMain" class="sp-new-chat-btn ws-open-btn">📁 打开文件夹</button>
+                        <div class="ws-empty-hint">或在聊天中输入: 打开项目 路径</div>
+                    </div>
+                </div>
+                <div class="ws-viewer" id="wsViewer" style="display:none">
+                    <div class="ws-viewer-header">
+                        <span id="wsFileName">文件名</span>
+                        <button id="wsViewerClose" class="sp-icon-btn" title="关闭">✕</button>
+                    </div>
+                    <pre class="ws-code" id="wsCode"><code></code></pre>
+                </div>
+                <div class="ws-oplog" id="wsOpLog">
+                    <div class="ws-oplog-title">
+                        <span class="pulse-dot"></span> Agent 操作日志
+                    </div>
+                    <div class="ws-oplog-list" id="wsOpLogList"></div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 操作确认弹窗 -->
+    <div id="actionModal" class="action-modal" style="display:none">
+        <div class="action-modal-backdrop"></div>
+        <div class="action-modal-card">
+            <div class="action-modal-header">
+                <span class="action-modal-icon">🔒</span>
+                <h3>操作需要确认</h3>
+            </div>
+            <div class="action-modal-body" id="actionModalBody">
+                <!-- 动态填充 -->
+            </div>
+            <div class="action-modal-actions">
+                <button id="actionApprove" class="btn-primary">✅ 确认执行</button>
+                <button id="actionDeny" class="btn-ghost">❌ 取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部状态栏 -->
+    <footer id="statusBar">
+        <div class="sb-left">
+            <span class="sb-item" id="sbModel"><span class="status-dot" id="sbModelDot"></span> 未连接</span>
+            <span class="sb-sep">·</span>
+            <span class="sb-item" id="sbMemory">💾 记忆: 0 条</span>
+            <span class="sb-sep">·</span>
+            <span class="sb-item" id="sbWechat">💬 微信: 离线</span>
+        </div>
+        <div class="sb-right">
+            <span class="sb-item" id="sbFacts">🧩 0 facts</span>
+        </div>
+    </footer>
+
+    <!-- Toast 通知容器 -->
+    <div id="toastContainer"></div>
+
+    <script src="pet-engine.js?v=20260507a"></script>
+    <!-- 模块化加载 (顺序很重要) -->
+    <script src="js/i18n.js?v=mod1"></script>
+    <script src="js/perf.js?v=mod1"></script>
+    <script src="js/chat.js?v=mod1"></script>
+    <script src="js/sessions.js?v=mod1"></script>
+    <script src="js/workspace.js?v=mod1"></script>
+    <script src="js/settings.js?v=mod1"></script>
+    <script src="js/ui.js?v=mod1"></script>
+    <script src="js/menu.js?v=mod2"></script>
+    <script src="js/wechat.js?v=mod1"></script>
+    <script src="js/panels.js?v=mod1"></script>
+    <script src="js/pet.js?v=mod2"></script>
+    <script src="js/scheduler.js?v=mod1"></script>
+    <script src="js/websocket.js?v=mod1"></script>
+    <!-- 入口编排 (最后加载) -->
+    <script src="app.js?v=mod2"></script>
+</body>
+</html>

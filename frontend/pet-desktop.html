@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>LocalMindDesk Pet</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            overflow: hidden;
+            user-select: none;
+        }
+        body { display: flex; align-items: center; justify-content: center; }
+        canvas {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            cursor: grab;
+        }
+        canvas.dragging { cursor: grabbing; }
+        .return-btn {
+            position: fixed;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(100, 108, 255, 0.85);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 3px 12px;
+            font-size: 11px;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+        body:hover .return-btn { opacity: 1; }
+        .return-btn:hover { background: rgba(100, 108, 255, 1); }
+    </style>
+</head>
+<body>
+    <canvas id="petCanvas"></canvas>
+    <button class="return-btn" id="returnBtn">↩ 回到应用</button>
+
+    <script src="pet-engine.js"></script>
+    <script>
+        const canvas = document.getElementById('petCanvas');
+        const returnBtn = document.getElementById('returnBtn');
+
+        // 创建独立的宠物管理器并初始化
+        // 注意：pet-engine.js 已创建 window.petManager 单例
+        const pm = window.petManager;
+
+        // 用一个简易 widget mock（桌面模式不需要 widget 显示逻辑）
+        const mockWidget = document.body;
+        mockWidget.classList.add('visible');
+
+        pm.init(canvas, mockWidget).catch(e => console.error('[DesktopPet]', e));
+
+        // ---- 自定义拖拽 ----
+        let isDragging = false, dragMoved = false, startX = 0, startY = 0;
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true; dragMoved = false;
+            startX = e.screenX; startY = e.screenY;
+            canvas.classList.add('dragging');
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.screenX - startX, dy = e.screenY - startY;
+            if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+                dragMoved = true;
+                startX = e.screenX; startY = e.screenY;
+                window.electronAPI?.movePetWindow?.(dx, dy);
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            canvas.classList.remove('dragging');
+        });
+
+        // ---- 点击 & 双击 ----
+        canvas.addEventListener('click', () => {
+            if (dragMoved) return;
+            window.dispatchEvent(new CustomEvent('LocalMindDesk:pet', { detail: { action: 'user-click' } }));
+        });
+
+        canvas.addEventListener('dblclick', () => closePet());
+        returnBtn.addEventListener('click', (e) => { e.stopPropagation(); closePet(); });
+
+        function closePet() {
+            window.electronAPI?.closePetWindow?.() || window.close();
+        }
+    </script>
+</body>
+</html>

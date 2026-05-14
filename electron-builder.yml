@@ -1,0 +1,33 @@
+﻿appId: com.localminddesk.app
+productName: LocalMindDesk
+copyright: Copyright © 2026 LocalMindDesk
+
+directories:
+  output: dist
+  buildResources: assets
+
+files:
+  - electron/**
+  - frontend/**
+  - assets/**
+  - package.json
+
+extraResources:
+  - from: python-dist/localminddesk-backend/
+    to: python-backend/
+    filter:
+      - "**/*"
+
+win:
+  target:
+    - target: dir
+      arch:
+        - x64
+    - target: zip
+      arch:
+        - x64
+  icon: assets/icon.png
+  artifactName: "localminddesk-${version}.${ext}"
+  signAndEditExecutable: false
+  sign: null
+  forceCodeSigning: false

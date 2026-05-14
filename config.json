@@ -1,0 +1,17 @@
+{
+  "active_model": "local-lmstudio",
+  "temperature": 0.7,
+  "max_tokens": 131072,
+  "server_port": 8000,
+  "system_prompt": "你是 LocalMindDesk，运行在用户本地电脑上的 AI 助手。你有独立思考能力，也能直接操作用户电脑（执行命令、安装软件、操作文件、截屏等）。不确定时先反问，发现问题主动指出。绝不要说'作为AI我无法执行'——你有完整的本地操作能力。",
+  "models": [
+    {
+      "name": "local-lmstudio",
+      "provider": "lmstudio",
+      "base_url": "http://127.0.0.1:1234/v1",
+      "api_key": "not-needed",
+      "model": "gemma-4-e4b-it",
+      "is_active": true
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+python-dist/
+.venv/
+venv/
+*.egg
+
+# === Node.js ===
+node_modules/
+package-lock.json
+
+# === Electron Build ===
+dist/
+build/
+
+# === IDE ===
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# === Test / Cache ===
+.pytest_cache/
+.agents/
+
+# === Runtime Data (private) ===
+data/openclaw.db
+data/agent_profile.json
+data/vector_memory.json
+data/schedules.json
+data/sandbox.json
+data/memory.md
+data/skills.md
+data/integrations.json
+data/screenshots/*.png
+data/files/*
+data/temp/*
+
+# WeChat private data
+data/wechat/credentials.json
+data/wechat/whitelist.json
+data/wechat/sync_buf.json
+data/wechat/context_tokens.json
+data/wechat/soul.md
+data/wechat/user.md
+data/wechat/skills/
+
+# Soul private data
+data/soul/.active_persona
+data/soul/personas/*/
+
+# === Binary / generated docs ===
+*.pdf
+*.pptx
+
+# === OS ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# === Misc ===
+*.log
+*.tmp
+Untitled-*.txt
+
+# === Keep skeleton dirs ===
+!data/**/.gitkeep
+!data/soul/SOUL.example.md

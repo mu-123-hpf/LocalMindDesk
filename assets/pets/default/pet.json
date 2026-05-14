@@ -1,0 +1,16 @@
+﻿{
+  "id": "default",
+  "displayName": "LocalMindDesk",
+  "description": "LocalMindDesk AI 助手吉祥物 — 3D 立体小猫",
+  "mode": "multi-image",
+  "images": {
+    "idle": "idle.png",
+    "walk": "idle.png",
+    "sit": "idle.png",
+    "sleep": "sleep.png",
+    "excited": "excited.png",
+    "typing": "typing.png",
+    "confused": "confused.png"
+  },
+  "defaultState": "idle"
+}
