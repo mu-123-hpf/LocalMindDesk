@@ -11,9 +11,7 @@
 
 <p align="center">
   <a href="doc/RUN_GUIDE.md">🚀 快速启动</a> ·
-  <a href="doc/project_architecture_guide.md">🏗️ 架构指南</a> ·
-  <a href="doc/action_agent_architecture.md">⚙️ Action Agent</a> ·
-  <a href="doc/self_evolution_architecture.md">🧬 自进化架构</a>
+  <a href="COMMANDS.md">📋 命令速查</a>
 </p>
 
 <p align="center">
@@ -226,8 +224,6 @@ FastAPI 后端 (app/main.py)
 本地 AI 模型 (LM Studio / OpenAI API)
 ```
 
-> 详细架构文档：[doc/project_architecture_guide.md](doc/project_architecture_guide.md)
-
 ---
 
 ## 🤝 微信连接
@@ -294,9 +290,6 @@ LocalMindDesk 计划实现一个通用的**外部应用集成框架**，让 AI �
 | 文档 | 说明 |
 |------|------|
 | [RUN_GUIDE.md](doc/RUN_GUIDE.md) | 完整运行指南（CLI / 网页 / Electron） |
-| [project_architecture_guide.md](doc/project_architecture_guide.md) | 保姆级架构讲解 |
-| [action_agent_architecture.md](doc/action_agent_architecture.md) | Action Agent 设计文档 |
-| [self_evolution_architecture.md](doc/self_evolution_architecture.md) | 自进化架构设计 |
 | [COMMANDS.md](COMMANDS.md) | 命令速查手册 |
 
 ---
