@@ -54,6 +54,11 @@ data/wechat/skills/
 data/soul/.active_persona
 data/soul/personas/*/
 
+# === Internal docs (keep local, don't upload) ===
+doc/action_agent_architecture.md
+doc/project_architecture_guide.md
+doc/self_evolution_architecture.md
+
 # === Binary / generated docs ===
 *.pdf
 *.pptx
