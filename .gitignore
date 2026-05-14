@@ -29,7 +29,7 @@ build/
 .agents/
 
 # === Runtime Data (private) ===
-data/openclaw.db
+data/*.db
 data/agent_profile.json
 data/vector_memory.json
 data/schedules.json
