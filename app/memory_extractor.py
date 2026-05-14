@@ -76,7 +76,7 @@ class AutoMemoryExtractor:
 
         v2: 增加准入控制 + FactMemory 集成
         """
-        # 准入控制（学习 NAVI）
+        # 准入控制
         from app.fact_memory import FactMemory
         if not FactMemory.should_ingest(messages):
             return

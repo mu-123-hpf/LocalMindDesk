@@ -1,6 +1,6 @@
 ﻿"""
 LocalMindDesk — FactMemory (SSOT 用户事实知识库) v1
-学习 NAVI 的 Additive-Only 设计:
+参考 Additive-Only 设计:
   - 旧 fact 不删，靠 superseded_by 链做版本演进
   - MD5 hash 去重
   - 异步矛盾检测 Worker（LLM 辩证推理）
@@ -240,7 +240,7 @@ class FactMemory:
         """
         生成 USER.md 内容（从 FactMemory 自动渲染）
 
-        类似 NAVI 的 USER.md — 只读投影
+        类似 USER.md — 只读投影
         """
         facts = self.get_all_facts(50)
         if not facts:

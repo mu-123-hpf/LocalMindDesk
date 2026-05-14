@@ -1,6 +1,6 @@
 ﻿"""
 LocalMindDesk — System Prompt Builder
-Inspired by Claude Code's modular, sectioned system prompt architecture.
+Inspired by industry-standard modular, sectioned system prompt architecture.
 
 Design principles:
 - Each section is a function returning str | None
@@ -37,7 +37,7 @@ def _section_identity(profile: dict) -> str:
 
 
 # ============================================================
-#  Section 2: Behavior Rules (Claude Code's "Doing Tasks")
+#  Section 2: Behavior Rules ("Doing Tasks")
 # ============================================================
 def _section_behavior_rules(profile: dict) -> str:
     """Core behavior rules — coding best practices, communication style."""
@@ -53,7 +53,7 @@ def _section_behavior_rules(profile: dict) -> str:
 
 
 # ============================================================
-#  Section 3: Tool-Use Constraints (Claude Code's core)
+#  Section 3: Tool-Use Constraints (core)
 # ============================================================
 def _section_tool_constraints() -> str:
     """Explicit rules about which tools to use for which operations."""
@@ -202,7 +202,7 @@ def _section_vector_memory(user_message: str) -> Optional[str]:
 # ============================================================
 class SystemPromptBuilder:
     """
-    Modular system prompt assembly — Claude Code-inspired.
+    Modular system prompt assembly — .
 
     Usage:
         builder = SystemPromptBuilder(profile, workspace_path, mode, user_message)

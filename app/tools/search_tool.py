@@ -1,7 +1,7 @@
 ﻿"""
 LocalMindDesk — SearchTool
 代码搜索工具：grep（内容搜索）+ glob（文件名搜索）
-新增工具，借鉴 Claude Code 的 GrepTool 和 GlobTool
+新增工具，借鉴业界主流 GrepTool 和 GlobTool
 """
 import os
 import re

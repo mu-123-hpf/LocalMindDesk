@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 """
 LocalMindDesk — Background Task Manager
-Inspired by Claude Code's Task.ts / services/preventSleep.ts
+Inspired by industry-standard Task.ts / services/preventSleep.ts
 
 Manages long-running operations that continue after the SSE stream ends:
 - Shell commands (pip install, npm build, etc.)
@@ -152,7 +152,7 @@ class TaskManager:
 def auto_compact_task(task: BackgroundTask, session_id: str, messages: list[dict]):
     """
     Background auto-compact: summarize conversation when it gets too long.
-    Inspired by Claude Code's autoCompact.ts
+    Inspired by industry-standard autoCompact.ts
     """
     task.output_lines.append(f"Checking context size for session {session_id[:8]}...")
 

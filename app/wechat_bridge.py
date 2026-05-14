@@ -66,7 +66,7 @@ _WECHAT_FALLBACK_PROMPT = (
 
 def _load_wechat_context() -> str:
     """
-    动态加载微信角色上下文（参考 NAVI 的 ContextBuilder）。
+    动态加载微信角色上下文（参考主流 ContextBuilder）。
     按优先级加载：soul.md → user.md → skills/*.md
     如果 soul.md 不存在，降级使用 _WECHAT_FALLBACK_PROMPT。
     """
@@ -302,7 +302,7 @@ class WeChatBridge:
     async def send_media(self, user_id: str, file_path: str, caption: str = ""):
         """
         上传并发送媒体文件（图片/视频/文件）到微信用户。
-        参考 NAVI 项目的 iLink 上传流程：
+        参考 iLink 上传流程：
           1. 客户端生成随机 AES-128 key 和 filekey
           2. AES-128-ECB 加密文件
           3. 调用 getuploadurl 获取 CDN 地址

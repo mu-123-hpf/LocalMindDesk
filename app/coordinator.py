@@ -1,9 +1,9 @@
 ﻿# -*- coding: utf-8 -*-
 """
 LocalMindDesk — Task Coordinator
-Inspired by Claude Code's coordinatorMode.ts — orchestrates multi-step tasks.
+Inspired by industry-standard coordinatorMode.ts — orchestrates multi-step tasks.
 
-Design principles (from Claude Code):
+Design principles (from ):
 1. Break complex requests into discrete steps
 2. Each step is self-contained with clear inputs/outputs
 3. Steps emit SSE events for the collapsible UI

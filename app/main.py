@@ -278,7 +278,7 @@ async def api_chat_stream(req: ChatRequest):
             gen_summary = f"Generated {token_count} tokens in {(_t2 - _t1):.1f}s"
             yield f"data: {json.dumps({'step_end': {'id': 's_gen', 'summary': gen_summary}}, ensure_ascii=False)}\n\n"
 
-            # ★ Record turn metrics (Claude Code-inspired token budget tracking)
+            # ★ Record turn metrics ( token budget tracking)
             try:
                 from app.metrics import get_metrics
                 m = get_metrics()
@@ -407,7 +407,7 @@ async def api_sandbox_grant(req: SandboxPermissionRequest):
     add_sandbox_root(norm_path)
     return {"granted": True, "path": norm_path, "reason": f"已临时授权访问: {norm_path}"}
 
-# ★ 权限决定记录（Claude Code PermissionContext 模式）
+# ★ 权限决定记录（权限上下文模式）
 _permission_decisions: dict[str, dict] = {}  # permission_id → {granted, path, ...}
 _denied_paths: set = set()  # 用户拒绝的路径集合
 
@@ -642,7 +642,7 @@ async def api_execute_action(request: Request):
     """
     前端确认后执行操作。
     
-    沙盒权限升级流程 (学习 Claude Code PermissionContext):
+    沙盒权限升级流程 (学习 PermissionContext):
     1. 操作路径在沙盒内 → 直接执行
     2. 操作路径在黑名单内 → 永久拒绝
     3. 操作路径在沙盒外 → 返回 pending_permission，前端显示 Allow/Deny

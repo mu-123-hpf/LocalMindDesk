@@ -1,7 +1,7 @@
 ﻿"""
 LocalMindDesk — ToolRegistry
 工具注册表：统一注册、查找、执行工具
-借鉴 Claude Code 的 tools.ts 设计
+借鉴业界主流 tools.ts 设计
 """
 import time
 from datetime import datetime

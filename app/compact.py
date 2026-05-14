@@ -1,10 +1,10 @@
 ﻿# -*- coding: utf-8 -*-
 """
 LocalMindDesk — LLM 对话压缩器 v2
-学习 Claude Code 的 compact/prompt.ts + autoCompact.ts
+参考 compact/prompt.ts + autoCompact.ts
 
 核心改进 (vs v1):
-1. 9 段式结构化摘要模板 (来自 Claude Code)
+1. 9 段式结构化摘要模板 (来自 )
 2. 基于消息数的触发 (适配 4K 小模型)
 3. 双策略：LLM 压缩 + 规则回退
 4. 摘要去重 + 迭代压缩支持
@@ -28,7 +28,7 @@ KEEP_RECENT = 4
 SUMMARY_MAX_TOKENS = 600
 
 # ============================================================
-#  9 段式压缩提示词 (学习 Claude Code compact/prompt.ts)
+#  9 段式压缩提示词 (学习  compact/prompt.ts)
 # ============================================================
 COMPACT_SYSTEM_PROMPT = """你是对话压缩专家。请将对话历史压缩为结构化摘要。
 

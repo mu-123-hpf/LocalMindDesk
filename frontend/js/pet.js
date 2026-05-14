@@ -129,8 +129,8 @@ function initPetWidget() {
 
     status.textContent = '⏳ 正在导入...';
     try {
-      // 从 awesome-codex-pet 下载 pet.json 和 spritesheet.webp
-      const baseUrl = `https://raw.githubusercontent.com/legeling/awesome-codex-pet/main/pets/${petSlug}`;
+      // 从 community-pet-assets 下载 pet.json 和 spritesheet.webp
+      const baseUrl = `https://raw.githubusercontent.com/legeling/community-pet-assets/main/pets/${petSlug}`;
 
       const petJsonResp = await fetch(`${baseUrl}/pet.json`);
       if (!petJsonResp.ok) throw new Error('找不到该宠物的 pet.json');

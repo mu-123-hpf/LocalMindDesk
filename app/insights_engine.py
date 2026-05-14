@@ -1,6 +1,6 @@
 ﻿"""
 LocalMindDesk — InsightsEngine（行为洞察引擎）
-学习 NAVI 的 insights_engine.py
+参考 insights_engine.py
 
 功能:
   - 分析工具调用模式（最常用 / 最失败）

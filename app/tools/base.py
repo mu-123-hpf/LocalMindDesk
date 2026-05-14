@@ -39,7 +39,7 @@ class ToolResult:
 class BaseTool(ABC):
     """
     所有工具的抽象基类。
-    借鉴 Claude Code 的 Tool 接口设计:
+    借鉴业界主流 Tool 接口设计:
     - name: 工具唯一标识
     - description: 工具描述
     - danger_level: 默认危险等级（safe/moderate/critical）

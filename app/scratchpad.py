@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 """
 LocalMindDesk — Scratchpad
-Inspired by Claude Code's memdir/scratchpad concept.
+Inspired by industry-standard memdir/scratchpad concept.
 
 A per-session scratch space where the AI can:
 1. Take notes during complex tasks

@@ -1,6 +1,6 @@
 ﻿"""
 LocalMindDesk — Skills Manager
-技能管理器：全局技能 + 项目局部技能（参考 NAVI 的分层 Skill 系统）
+技能管理器：全局技能 + 项目局部技能
 
 设计：
 - 全局技能：data/skills.md + data/skills/global/*.md  → 始终存在

@@ -1,6 +1,6 @@
 ﻿"""
 LocalMindDesk — 统一上下文管理器
-借鉴 Claude Code 的 ToolUseContext + context.ts 设计
+借鉴业界主流 ToolUseContext + context.ts 设计
 
 统一管理会话状态：工作区、历史、文件缓存、模型配置等。
 所有 Agent / Tool 调用时共用同一个 Context 实例。
@@ -17,7 +17,7 @@ class SessionContext:
     """
     统一会话上下文 — 每次用户发消息时创建/更新
 
-    借鉴 Claude Code 的 ToolUseContext:
+    借鉴业界主流 ToolUseContext:
     - workspace_path: 当前工作区
     - messages: 完整消息历史
     - system_prompt: 系统提示词

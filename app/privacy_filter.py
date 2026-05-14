@@ -198,7 +198,7 @@ class PrivacyFilter:
     def get_history(self, limit: int = 20) -> list[dict]:
         return self._history[-limit:]
 
-    # ── v2.0: 上下文注入防护（学习 NAVI）──────────────────────
+    # ── v2.0: 上下文注入防护──────────────────────
     # 检测 SOUL.md / USER.md 等文件中的提示词注入攻击
 
     INJECTION_PATTERNS = [

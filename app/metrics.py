@@ -31,7 +31,7 @@ class MetricsCollector:
         self._api_durations: dict[str, list[float]] = {}
         self._tool_calls: dict[str, dict] = {}  # tool_name -> {success: int, fail: int}
         self._start_time = time.time()
-        # ★ Per-turn token budget tracking (Claude Code-inspired)
+        # ★ Per-turn token budget tracking ()
         self._session_tokens: int = 0      # cumulative output tokens this session
         self._turn_history: list[dict] = []  # last N turn records
 

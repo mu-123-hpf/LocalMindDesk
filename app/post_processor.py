@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 """
 LocalMindDesk — Post-Processor (Stop Hooks)
-Inspired by Claude Code's stopHooks.ts — runs after every LLM turn.
+Inspired by industry-standard stopHooks.ts — runs after every LLM turn.
 
 Responsibilities:
 1. Auto-extract facts/memories from the conversation
@@ -156,7 +156,7 @@ class PostProcessor:
         except Exception:
             pass  # Title generation is best-effort
 
-    # ── Hook 3: Auto-compact (Claude Code pattern) ──
+    # ── Hook 3: Auto-compact ( pattern) ──
 
     def _hook_auto_compact(self, history: list[dict], session_id: Optional[str]):
         """Trigger background compaction when context gets too large."""

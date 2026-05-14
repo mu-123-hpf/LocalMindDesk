@@ -273,7 +273,7 @@ def generate():
     )
 
     pdf.h2("4.3 三层记忆系统")
-    pdf.body("受 Claude Code 启发的三层记忆架构：")
+    pdf.body("受  启发的三层记忆架构：")
     pdf.bullet("L1 热窗口: 当前对话的最近 20 条消息，直接作为上下文发送给模型")
     pdf.bullet("L2 长期记忆: 跨会话持久化的关键信息，自动压缩和归档")
     pdf.bullet("L3 向量记忆: 使用 Embedding 或 TF-IDF 的语义搜索，召回相关历史")

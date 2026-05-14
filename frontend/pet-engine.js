@@ -1,7 +1,7 @@
 ﻿// ============================================================
 //  LocalMindDesk — 桌宠引擎 v3
 //  精灵图帧动画 · Canvas 渲染 · 自动帧检测 · 状态机 · localStorage
-//  完全兼容 awesome-codex-pet 格式
+//  完全兼容 community-pet-assets 格式
 // ============================================================
 
 class PetStateMachine {
@@ -88,7 +88,7 @@ class PetManager {
 
     // 设置
     this.petSize = 128;
-    this.currentPetId = 'bocchi--lingxiaotian'; // 默认用 bocchi
+    this.currentPetId = 'default'; // 默认宠物
     this.petEnabled = true;
     this.reactToAI = true;
     this.displayMode = 'inapp';
@@ -179,7 +179,7 @@ class PetManager {
 
   /**
    * 自动检测精灵图帧布局
-   * codex-pet 标准: 精灵图由等宽等高的帧组成网格
+   * 精灵图标准: 精灵图由等宽等高的帧组成网格
    */
   _detectFrameLayout() {
     const img = this.spritesheet;
@@ -420,7 +420,7 @@ class PetManager {
       const s = JSON.parse(raw);
       if (s.timestamp && Date.now() - s.timestamp < 72 * 3600000) {
         this.petEnabled = s.petEnabled ?? true;
-        this.currentPetId = s.currentPetId || 'bocchi--lingxiaotian';
+        this.currentPetId = s.currentPetId || 'default';
         this.petSize = s.petSize || 128;
         this.reactToAI = s.reactToAI ?? true;
         this.displayMode = s.displayMode || 'inapp';
@@ -430,7 +430,7 @@ class PetManager {
 
   async getInstalledPets() {
     if (window.electronAPI?.listPets) return await window.electronAPI.listPets();
-    return [{ id: 'bocchi--lingxiaotian', name: 'Bocchi', description: 'Bocchi the Rock' }];
+    return [{ id: 'default', name: 'Default', description: 'LocalMindDesk mascot' }];
   }
 }
 

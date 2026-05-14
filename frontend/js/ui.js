@@ -189,7 +189,7 @@ function showActionConfirmModal(actions) {
       });
       const d = await r.json();
 
-      // ★ 沙盒权限升级: 需要用户批准 (Claude Code 模式)
+      // ★ 沙盒权限升级: 需要用户批准 (AI assistant 模式)
       if (d.needs_approval && d.pending_permissions) {
         let permHtml = '<div class="acf-result" style="border-left:3px solid #f59e0b; padding:8px; margin:4px 0;">';
         permHtml += '<div style="font-weight:600; color:#f59e0b; margin-bottom:6px;">🔒 以下路径超出沙盒范围，需要您的授权：</div>';
